@@ -1,0 +1,40 @@
+<div id="top-navbar">
+	<div class="container">
+		<div class="nav-wrapper">
+
+			<div class="toggle-btn" onclick="toggleSidebar()">
+				<i class="fas fa-bars"></i>
+			</div>
+
+
+			<div class="dropdown">
+				<button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false" style="color: white">
+					<img class="profile-pic" src="{{ request.user.picture.url }}">
+					{{ request.user.get_full_name|truncatechars:15 }}
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<p class="container text-muted-xs text-center">Последний вход: {{ request.user.last_login|date }}</p>
+
+					{% if request.user.is_lecturer or request.user.is_student %}
+					<a class="dropdown-item" href="{% url 'user_course_list' %}"><i class="fas fa-book"></i>Мои курсы</a>
+					{% endif %}
+
+					{% if request.user.is_superuser %}
+					<a class="dropdown-item" href="{% url 'admin_panel' %}"><i class="fas fa-user-tie"></i>Панель администратора</a>
+					{% endif %}
+
+					<a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user"></i>Профиль</a>
+					<a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="fas fa-cogs"></i>Настройки</a>
+					<hr>
+					<div style="display: flex; justify-content: center; align-items: center;">
+						<a class="btn btn-secondary" href="{% url 'logout' %}">
+							<i class="fas fa-sign-out-alt"></i> Выход
+						</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

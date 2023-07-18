@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Домашняя страница</a> <i>&rsaquo;</i> Управление баллами</div>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>{{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>{{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<br>
+<div class="title-1"><i class="fas fa-table"></i>Управление баллами</div>
+<div class="title-line"></div><br>
+
+<div class="row">
+    <div class="col-md-8 p-0 mx-auto">
+        <p class="form-title">
+            {{ current_semester }} Семестр - <i class="result-title">{{ current_session }}</i>
+        </p><br>
+        <div class="container">
+            <div class="content-center"><i class="far fa-frown fa-2x"></i> Курс не выбран</div>
+
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Выберите курс здесь
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for course in courses %}
+                        <a class="dropdown-item" href="{% url 'add_score_for' course.id %}" title="{{ course.code }}">{{ course.title }}</a>
+                    {% empty %}
+                        <p class="dropdown-item"><i class="far fa-frown fa-1x"></i> Нет курсов</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <p>Чтобы изменять оценки, сначала выберите свой курс выше.</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

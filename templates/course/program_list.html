@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div id="input-nav"><a href="{% url 'home' %}" class="primary1">Домашняя страница</a> <i>&rsaquo;</i> Программы обучения </div>
+
+{% if request.user.is_superuser %}
+<a class="add-button" href="{% url 'add_program' %}"><i class="fas fa-plus"></i>Добавить программу обучения</a>
+{% endif %}
+
+<div class="title-1"><i class="fas fa-book-open"></i>Список программ</div>
+<div class="title-line"></div>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger">
+    <i class="fas fa-exclamation-circle"></i>{{ message }}
+</div>
+{% else %}
+<div class="alert alert-success">
+    <i class="fas fa-check-circle"></i>{{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<div class="content-center">
+    <form class="search-form mx-auto" action="" method="GET">{% csrf_token %}
+        <input class="au-input" type="text" name="program_filter" placeholder="Название программы"
+            value="{{ request.GET.program_filter }}" />
+        <button class="btn btn-light" type="submit">
+            <i class="fas fa-search"></i>Фильтр
+        </button>
+    </form>
+</div>
+
+
+{% for program in programs %}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <p class="p-4">
+                Вы уверены, что хотите удалить этот элемент?
+            </p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <a class="btn btn-danger" href="{% url 'program_delete' pk=program.pk %}">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<div class="table-responsive table-shadow table-light table-striped m-0 mt-5">
+    <div class="table-shadow">
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Название программы</th>
+                    <th>Краткое описание</th>
+                    {% if request.user.is_superuser %}
+                    <th>Действия</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for program in programs %}
+                <tr>
+                    <td>{{ forloop.counter }}.</td>
+                    <td><a class="a-list" href="{{ program.get_absolute_url }}">
+                            {{ program.title}}</a></td>
+                    <td>{{ program.summary }} </td>
+                    {% if request.user.is_superuser %}
+
+                    <td>
+                        <div class="update-delete">
+                            <a href="{% url 'edit_program' pk=program.pk %}" class="update"><i
+                                    class="fas fa-edit"></i></a>
+                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#exampleModal">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <p class="p-4">
+                                        Вы точно хотите удалить эту программу?
+                                    </p>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Закрыть</button>
+                                        <a class="btn btn-danger"
+                                            href="{% url 'program_delete' pk=program.pk %}">Удалить</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
